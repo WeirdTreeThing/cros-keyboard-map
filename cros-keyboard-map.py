@@ -66,6 +66,9 @@ def create_keyd_config(physmap):
         i += 1
         config += f"{vivaldi_scancode_to_keyd(scancode)} = {vivaldi_scancode_to_keyd(scancode)}\n"
 
+    # map lock button to coffee
+    config += "\nf13=coffee\nsleep=coffee\n"
+
     # make fn keys act like fn keys when super is held
     i = 0
     config += "\n[meta]\n"
