@@ -57,14 +57,24 @@ def create_keyd_config(physmap):
     i = 0
     for scancode in physmap:
         i += 1
-        config += f"f{i} = {vivaldi_scancode_to_keyd(scancode)}\n"
+        # Map zoom to f11 since most applications wont listen to zoom
+        if vivaldi_scancode_to_keyd(scancode) == "zoom":
+            mapping = "f11"
+        else:
+            mapping = vivaldi_scancode_to_keyd(scancode)
+        config += f"f{i} = {mapping}\n"
     config += "\n"
     
     # make vivaldi keys act like vivaldi keys when super isn't held
     i = 0
     for scancode in physmap:
         i += 1
-        config += f"{vivaldi_scancode_to_keyd(scancode)} = {vivaldi_scancode_to_keyd(scancode)}\n"
+        # Map zoom to f11 since most applications wont listen to zoom
+        if vivaldi_scancode_to_keyd(scancode) == "zoom":
+            mapping = "f11"
+        else:
+            mapping = vivaldi_scancode_to_keyd(scancode)
+        config += f"{vivaldi_scancode_to_keyd(scancode)} = {mapping}\n"
 
     # map lock button to coffee
     config += "\nf13=coffee\nsleep=coffee\n"
