@@ -86,6 +86,8 @@ def create_keyd_config(physmap):
         i += 1
         config += f"f{i} = f{i}\n"
 
+    # make lock buttons act like fn keys when super is held
+    config +="\nf13=f13\nf12=f12\n"
     # make vivaldi keys act like like fn keys when super is held
     i = 0
     config += "\n"
@@ -93,6 +95,8 @@ def create_keyd_config(physmap):
         i += 1
         config += f"{vivaldi_scancode_to_keyd(scancode)} = f{i}\n"
 
+    # make lock buttons act like like fn keys when super is held
+    config += "\nf13=f13\nsleep=f12\n"
     # Add various extra shortcuts
     config += """\n[alt]
 backspace = delete
