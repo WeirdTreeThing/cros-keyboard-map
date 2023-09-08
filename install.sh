@@ -40,6 +40,7 @@ if ! [ -f /usr/bin/keyd ]; then
 		git clone https://aur.archlinux.org/keyd.git
 		cd keyd
 		makepkg -si --noconfirm
+		cd ..
 		;;
 		alpine)
 		doas apk add --no-interactive keyd
