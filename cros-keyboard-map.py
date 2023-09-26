@@ -96,7 +96,6 @@ def create_keyd_config(physmap):
     # Add various extra shortcuts
     config += """\n[alt]
 backspace = delete
-meta = capslock
 brightnessdown = kbdillumdown
 brightnessup = kbdillumup
 f6 = kbdillumdown
