@@ -3,6 +3,8 @@
 #alpine arch and suse have packages
 #need to build on fedora and deb*
 
+ROOT=$(pwd)
+
 if [ -f /usr/bin/apt ]; then
 	distro="deb"
 elif [ -f /usr/bin/zypper ]; then
@@ -73,5 +75,13 @@ case $distro in
 	sudo systemctl restart keyd
 	;;
 esac
+
+echo "Installing libinput configuration"
+sudo mkdir -p /etc/libinput
+if [ -f /etc/libinput/local-overrides.quirks ]; then
+    cat $ROOT/local-overrides.quirks >> /etc/libinput/local-overrides.quirks
+else
+    cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+fi
 
 echo "Done"
