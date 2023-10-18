@@ -79,9 +79,9 @@ esac
 echo "Installing libinput configuration"
 sudo mkdir -p /etc/libinput
 if [ -f /etc/libinput/local-overrides.quirks ]; then
-    cat $ROOT/local-overrides.quirks >> /etc/libinput/local-overrides.quirks
+    cat $ROOT/local-overrides.quirks | sudo tee -a /etc/libinput/local-overrides.quirks > /dev/null
 else
-    cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+    sudo cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
 fi
 
 echo "Done"
