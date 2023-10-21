@@ -66,9 +66,7 @@ def create_keyd_config(physmap):
     config += "\n"
     
     # make vivaldi keys act like vivaldi keys when super isn't held
-    i = 0
     for scancode in physmap:
-        i += 1
         # Map zoom to f11 since most applications wont listen to zoom
         if vivaldi_scancode_to_keyd(scancode) == "zoom":
             mapping = "f11"
