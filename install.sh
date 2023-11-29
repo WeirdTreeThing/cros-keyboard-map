@@ -64,7 +64,13 @@ if ! [ -f /usr/bin/keyd ]; then
 fi
 
 echo "Generating config"
-python3 cros-keyboard-map.py
+# Handle any special cases
+if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null)
+then
+	cp configs/cros-pixel.conf cros.conf
+else
+	python3 cros-keyboard-map.py
+fi
 
 echo "Installing config"
 $privesc mkdir -p /etc/keyd
