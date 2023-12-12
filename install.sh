@@ -23,7 +23,6 @@ elif [ -f /usr/bin/doas ]; then
 	privesc="doas"
 fi
 
-
 if ! [ -f /usr/bin/keyd ]; then
     # if keyd isnt installed
 	echo "Installing keyd dependencies"
@@ -79,8 +78,14 @@ $privesc cp cros.conf /etc/keyd
 echo "Enabling keyd"
 case $distro in
     alpine)
-        $privesc rc-update add keyd
-        $privesc rc-service keyd restart
+	# Chimera uses apk like alpine but uses dinit instead of openrc
+	if [ -f /usr/bin/dinitctl ]; then
+		$privesc dinitctl start keyd
+		$privesc dinitctl enable keyd
+	else
+        	$privesc rc-update add keyd
+        	$privesc rc-service keyd restart
+	fi
 	;;
     *)
         $privesc systemctl enable keyd
