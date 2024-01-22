@@ -50,6 +50,7 @@ def create_keyd_config(physmap):
     config = ""
     config += """[ids]
 0001:0001
+0000:0000
 
 [main]
 """
