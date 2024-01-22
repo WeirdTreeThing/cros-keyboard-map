@@ -13,7 +13,7 @@ elif [ -f /usr/bin/pacman ]; then
 	distro="arch"
 elif [ -f /usr/bin/dnf ]; then
 	distro="fedora"
-elif [ -f /usr/bin/apk ]; then
+elif [ -f /sbin/apk ]; then
 	distro="alpine"
 fi
 
