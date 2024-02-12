@@ -30,7 +30,7 @@ def get_physmap_data():
     except FileNotFoundError:
         return ""
 
-def get_functional_row(physmap, use_vivaldi, super_is_held):
+def get_functional_row(physmap, use_vivaldi, super_is_held, super_inverted):
     i = 0
     result = ""
     for scancode in physmap:
@@ -39,19 +39,19 @@ def get_functional_row(physmap, use_vivaldi, super_is_held):
         mapping = "f11" if vivaldi_keys[scancode] == "zoom" \
             else vivaldi_keys[scancode]
 
-        match [super_is_held, use_vivaldi]:
-            case [True, True]:
+        match [super_is_held, use_vivaldi, super_inverted]:
+            case [True, True, False] | [False, True, True]:
                 result += f"{vivaldi_keys[scancode]} = f{i}\n"
-            case [True, False]:
+            case [True, False, False] | [False, False, True]:
                 result += f"f{i} = f{i}\n"
-            case [False, True]:
+            case [False, True, False] | [True, True, True]:
                 result += f"{vivaldi_keys[scancode]} = {mapping}\n"
-            case [False, False]:
+            case [False, False, False] | [True, False, True]:
                 result += f"f{i} = {mapping}\n"
 
     return result
 
-def get_keyd_config(physmap):
+def get_keyd_config(physmap, inverted):
     config = ""
     config += """[ids]
 k:0001:0001
@@ -59,15 +59,15 @@ k:0000:0000
 
 [main]
 """
-    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=False)
+    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)
     config += "\n"
-    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=False)
+    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=False, super_inverted=inverted)
     # map lock button to coffee
     config += "\nf13=coffee\nsleep=coffee\n"
     config += "\n[meta]\n"
-    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=True)
+    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=True, super_inverted=inverted)
     config += "\n"
-    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=True)
+    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=True, super_inverted=inverted)
     # Add various extra shortcuts
     config += """\n[alt]
 backspace = delete
@@ -88,6 +88,8 @@ backspace = C-A-delete"""
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", default="cros.conf", help="path to save config (default: cros.conf)")
+    parser.add_argument("-i", "--inverted", action="store_true", 
+                        help="use functional keys by default and media keys when super is held")
     args = vars(parser.parse_args())
 
     physmap = get_physmap_data()
@@ -95,7 +97,7 @@ def main():
         print("no function row mapping found, using default mapping")
         physmap = ['EA', 'E9', 'E7', '91', '92', '94', '95', 'A0', 'AE', 'B0']
     
-    config = get_keyd_config(physmap)
+    config = get_keyd_config(physmap, args["inverted"])
     with open(args["file"], "w") as conf:
         conf.write(config)
 
