@@ -1,99 +1,78 @@
 #!/usr/bin/env python3
 
-def vivaldi_scancode_to_keyd(scancode):
-    match scancode:
-        case "90":
-            return "previoussong"
-        case "91":
-            return "zoom"
-        case "92":
-            return "scale"
-        case "93":
-            return "print"
-        case "94":
-            return "brightnessdown"
-        case "95":
-            return "brightnessup"
-        case "97":
-            return "kbdillumdown"
-        case "98":
-            return "kbdillumup"
-        case "99":
-            return "nextsong"
-        case "9A":
-            return "playpause"
-        case "9B":
-            return "micmute"
-        case "9E":
-            return "kbdillumtoggle"
-        case "A0":
-            return "mute"
-        case "AE":
-            return "volumedown"
-        case "B0":
-            return "volumeup"
-        case "E9":
-            return "forward"
-        case "EA":
-            return "back"
-        case "E7":
-            return "refresh"
+import argparse
 
-def load_physmap_data():
+device_ids = {
+    "k:0000:0000", # cros_ec keyboard
+    "k:0001:0001", # AT keyboard
+    "k:18d1:5050", # Google Inc. Hammer
+}
+
+vivaldi_keys = {
+    "90": "previoussong",
+    "91": "zoom",
+    "92": "scale",
+    "93": "print",
+    "94": "brightnessdown",
+    "95": "brightnessup",
+    "97": "kbdillumdown",
+    "98": "kbdillumup",
+    "99": "nextsong",
+    "9A": "playpause",
+    "9B": "micmute",
+    "9E": "kbdillumtoggle",
+    "A0": "mute",
+    "AE": "volumedown",
+    "B0": "volumeup",
+    "E9": "forward",
+    "EA": "back",
+    "E7": "refresh",
+}
+
+def get_physmap_data():
     try:
         with open("/sys/bus/platform/devices/i8042/serio0/function_row_physmap", "r") as file:
             return file.read().strip().split()
     except FileNotFoundError:
         return ""
 
-def create_keyd_config(physmap):
-    config = ""
-    config += """[ids]
-k:0001:0001
-k:0000:0000
+def get_functional_row(physmap, use_vivaldi, super_is_held, super_inverted):
+    i = 0
+    result = ""
+    for scancode in physmap:
+        i += 1
+        # Map zoom to f11 since most applications wont listen to zoom
+        mapping = "f11" if vivaldi_keys[scancode] == "zoom" \
+            else vivaldi_keys[scancode]
+
+        match [super_is_held, use_vivaldi, super_inverted]:
+            case [True, True, False] | [False, True, True]:
+                result += f"{vivaldi_keys[scancode]} = f{i}\n"
+            case [True, False, False] | [False, False, True]:
+                result += f"f{i} = f{i}\n"
+            case [False, True, False] | [True, True, True]:
+                result += f"{vivaldi_keys[scancode]} = {mapping}\n"
+            case [False, False, False] | [True, False, True]:
+                result += f"f{i} = {mapping}\n"
+
+    return result
+
+def get_keyd_config(physmap, inverted):
+    config = f"""\
+[ids]
+{"\n".join(device_ids)}
 
 [main]
-"""
-    # make fn keys act like vivaldi keys when super isn't held
-    i = 0
-    for scancode in physmap:
-        i += 1
-        # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_scancode_to_keyd(scancode) == "zoom":
-            mapping = "f11"
-        else:
-            mapping = vivaldi_scancode_to_keyd(scancode)
-        config += f"f{i} = {mapping}\n"
-    config += "\n"
-    
-    # make vivaldi keys act like vivaldi keys when super isn't held
-    for scancode in physmap:
-        # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_scancode_to_keyd(scancode) == "zoom":
-            mapping = "f11"
-        else:
-            mapping = vivaldi_scancode_to_keyd(scancode)
-        config += f"{vivaldi_scancode_to_keyd(scancode)} = {mapping}\n"
+{get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)}
+{get_functional_row(physmap, use_vivaldi=True, super_is_held=False, super_inverted=inverted)}
+f13=coffee
+sleep=coffee
 
-    # map lock button to coffee
-    config += "\nf13=coffee\nsleep=coffee\n"
+[meta]
+{get_functional_row(physmap, use_vivaldi=False, super_is_held=True, super_inverted=inverted)}
+{get_functional_row(physmap, use_vivaldi=True, super_is_held=True, super_inverted=inverted)}
 
-    # make fn keys act like fn keys when super is held
-    i = 0
-    config += "\n[meta]\n"
-    for scancode in physmap:
-        i += 1
-        config += f"f{i} = f{i}\n"
-
-    # make vivaldi keys act like like fn keys when super is held
-    i = 0
-    config += "\n"
-    for scancode in physmap:
-        i += 1
-        config += f"{vivaldi_scancode_to_keyd(scancode)} = f{i}\n"
-
-    # Add various extra shortcuts
-    config += """\n[alt]
+[alt]
 backspace = delete
 brightnessdown = kbdillumdown
 brightnessup = kbdillumup
@@ -105,18 +84,25 @@ f5 = print
 scale = print
 
 [control+alt]
-backspace = C-A-delete"""
-
+backspace = C-A-delete
+"""
     return config
 
 def main():
-    physmap = load_physmap_data()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", default="cros.conf", help="path to save config (default: cros.conf)")
+    parser.add_argument("-i", "--inverted", action="store_true", 
+                        help="use functional keys by default and media keys when super is held")
+    args = vars(parser.parse_args())
+
+    physmap = get_physmap_data()
     if not physmap:
         print("no function row mapping found, using default mapping")
         physmap = ['EA', 'E9', 'E7', '91', '92', '94', '95', 'A0', 'AE', 'B0']
     
-    config = create_keyd_config(physmap)
-    with open("cros.conf", "w") as conf:
+    config = get_keyd_config(physmap, args["inverted"])
+    with open(args["file"], "w") as conf:
         conf.write(config)
 
-main()
+if __name__ == "__main__":
+    main()
