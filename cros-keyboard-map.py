@@ -119,4 +119,5 @@ def main():
     with open("cros.conf", "w") as conf:
         conf.write(config)
 
-main()
+if __name__ == "__main__":
+    main()
