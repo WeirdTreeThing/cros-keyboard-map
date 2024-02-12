@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 vivaldi_keys = {
     "90": "previoussong",
     "91": "zoom",
@@ -92,13 +94,17 @@ backspace = C-A-delete"""
     return config
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", default="cros.conf", help="path to save config (default: cros.conf)")
+    args = vars(parser.parse_args())
+
     physmap = load_physmap_data()
     if not physmap:
         print("no function row mapping found, using default mapping")
         physmap = ['EA', 'E9', 'E7', '91', '92', '94', '95', 'A0', 'AE', 'B0']
     
     config = create_keyd_config(physmap)
-    with open("cros.conf", "w") as conf:
+    with open(args["file"], "w") as conf:
         conf.write(config)
 
 if __name__ == "__main__":
