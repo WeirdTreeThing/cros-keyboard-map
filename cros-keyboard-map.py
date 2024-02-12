@@ -5,6 +5,7 @@ import argparse
 device_ids = {
     "k:0000:0000", # cros_ec keyboard
     "k:0001:0001", # AT keyboard
+    "k:18d1:5050", # Google Inc. Hammer
 }
 
 vivaldi_keys = {
