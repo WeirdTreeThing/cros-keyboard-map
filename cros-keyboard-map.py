@@ -2,6 +2,11 @@
 
 import argparse
 
+device_ids = {
+    "k:0000:0000", # cros_ec keyboard
+    "k:0001:0001", # AT keyboard
+}
+
 vivaldi_keys = {
     "90": "previoussong",
     "91": "zoom",
@@ -54,8 +59,7 @@ def get_functional_row(physmap, use_vivaldi, super_is_held, super_inverted):
 def get_keyd_config(physmap, inverted):
     config = f"""\
 [ids]
-k:0001:0001
-k:0000:0000
+{"\n".join(device_ids)}
 
 [main]
 {get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)}
