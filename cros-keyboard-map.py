@@ -23,14 +23,14 @@ vivaldi_keys = {
     "E7": "refresh",
 }
 
-def load_physmap_data():
+def get_physmap_data():
     try:
         with open("/sys/bus/platform/devices/i8042/serio0/function_row_physmap", "r") as file:
             return file.read().strip().split()
     except FileNotFoundError:
         return ""
 
-def create_keyd_config(physmap):
+def get_keyd_config(physmap):
     config = ""
     config += """[ids]
 k:0001:0001
@@ -98,12 +98,12 @@ def main():
     parser.add_argument("-f", "--file", default="cros.conf", help="path to save config (default: cros.conf)")
     args = vars(parser.parse_args())
 
-    physmap = load_physmap_data()
+    physmap = get_physmap_data()
     if not physmap:
         print("no function row mapping found, using default mapping")
         physmap = ['EA', 'E9', 'E7', '91', '92', '94', '95', 'A0', 'AE', 'B0']
     
-    config = create_keyd_config(physmap)
+    config = get_keyd_config(physmap)
     with open(args["file"], "w") as conf:
         conf.write(config)
 
