@@ -52,24 +52,22 @@ def get_functional_row(physmap, use_vivaldi, super_is_held, super_inverted):
     return result
 
 def get_keyd_config(physmap, inverted):
-    config = ""
-    config += """[ids]
+    config = f"""\
+[ids]
 k:0001:0001
 k:0000:0000
 
 [main]
-"""
-    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)
-    config += "\n"
-    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=False, super_inverted=inverted)
-    # map lock button to coffee
-    config += "\nf13=coffee\nsleep=coffee\n"
-    config += "\n[meta]\n"
-    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=True, super_inverted=inverted)
-    config += "\n"
-    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=True, super_inverted=inverted)
-    # Add various extra shortcuts
-    config += """\n[alt]
+{get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)}
+{get_functional_row(physmap, use_vivaldi=True, super_is_held=False, super_inverted=inverted)}
+f13=coffee
+sleep=coffee
+
+[meta]
+{get_functional_row(physmap, use_vivaldi=False, super_is_held=True, super_inverted=inverted)}
+{get_functional_row(physmap, use_vivaldi=True, super_is_held=True, super_inverted=inverted)}
+
+[alt]
 backspace = delete
 brightnessdown = kbdillumdown
 brightnessup = kbdillumup
@@ -81,8 +79,8 @@ f5 = print
 scale = print
 
 [control+alt]
-backspace = C-A-delete"""
-
+backspace = C-A-delete
+"""
     return config
 
 def main():
