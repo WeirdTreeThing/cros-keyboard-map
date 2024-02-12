@@ -1,43 +1,25 @@
 #!/usr/bin/env python3
 
-def vivaldi_scancode_to_keyd(scancode):
-    match scancode:
-        case "90":
-            return "previoussong"
-        case "91":
-            return "zoom"
-        case "92":
-            return "scale"
-        case "93":
-            return "print"
-        case "94":
-            return "brightnessdown"
-        case "95":
-            return "brightnessup"
-        case "97":
-            return "kbdillumdown"
-        case "98":
-            return "kbdillumup"
-        case "99":
-            return "nextsong"
-        case "9A":
-            return "playpause"
-        case "9B":
-            return "micmute"
-        case "9E":
-            return "kbdillumtoggle"
-        case "A0":
-            return "mute"
-        case "AE":
-            return "volumedown"
-        case "B0":
-            return "volumeup"
-        case "E9":
-            return "forward"
-        case "EA":
-            return "back"
-        case "E7":
-            return "refresh"
+vivaldi_keys = {
+    "90": "previoussong",
+    "91": "zoom",
+    "92": "scale",
+    "93": "print",
+    "94": "brightnessdown",
+    "95": "brightnessup",
+    "97": "kbdillumdown",
+    "98": "kbdillumup",
+    "99": "nextsong",
+    "9A": "playpause",
+    "9B": "micmute",
+    "9E": "kbdillumtoggle",
+    "A0": "mute",
+    "AE": "volumedown",
+    "B0": "volumeup",
+    "E9": "forward",
+    "EA": "back",
+    "E7": "refresh",
+}
 
 def load_physmap_data():
     try:
@@ -59,21 +41,21 @@ k:0000:0000
     for scancode in physmap:
         i += 1
         # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_scancode_to_keyd(scancode) == "zoom":
+        if vivaldi_keys[scancode] == "zoom":
             mapping = "f11"
         else:
-            mapping = vivaldi_scancode_to_keyd(scancode)
+            mapping = vivaldi_keys[scancode]
         config += f"f{i} = {mapping}\n"
     config += "\n"
     
     # make vivaldi keys act like vivaldi keys when super isn't held
     for scancode in physmap:
         # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_scancode_to_keyd(scancode) == "zoom":
+        if vivaldi_keys[scancode] == "zoom":
             mapping = "f11"
         else:
-            mapping = vivaldi_scancode_to_keyd(scancode)
-        config += f"{vivaldi_scancode_to_keyd(scancode)} = {mapping}\n"
+            mapping = vivaldi_keys[scancode]
+        config += f"{vivaldi_keys[scancode]} = {mapping}\n"
 
     # map lock button to coffee
     config += "\nf13=coffee\nsleep=coffee\n"
@@ -90,7 +72,7 @@ k:0000:0000
     config += "\n"
     for scancode in physmap:
         i += 1
-        config += f"{vivaldi_scancode_to_keyd(scancode)} = f{i}\n"
+        config += f"{vivaldi_keys[scancode]} = f{i}\n"
 
     # Add various extra shortcuts
     config += """\n[alt]
