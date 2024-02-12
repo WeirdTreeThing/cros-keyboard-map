@@ -30,6 +30,27 @@ def get_physmap_data():
     except FileNotFoundError:
         return ""
 
+def get_functional_row(physmap, use_vivaldi, super_is_held):
+    i = 0
+    result = ""
+    for scancode in physmap:
+        i += 1
+        # Map zoom to f11 since most applications wont listen to zoom
+        mapping = "f11" if vivaldi_keys[scancode] == "zoom" \
+            else vivaldi_keys[scancode]
+
+        match [super_is_held, use_vivaldi]:
+            case [True, True]:
+                result += f"{vivaldi_keys[scancode]} = f{i}\n"
+            case [True, False]:
+                result += f"f{i} = f{i}\n"
+            case [False, True]:
+                result += f"{vivaldi_keys[scancode]} = {mapping}\n"
+            case [False, False]:
+                result += f"f{i} = {mapping}\n"
+
+    return result
+
 def get_keyd_config(physmap):
     config = ""
     config += """[ids]
@@ -38,44 +59,15 @@ k:0000:0000
 
 [main]
 """
-    # make fn keys act like vivaldi keys when super isn't held
-    i = 0
-    for scancode in physmap:
-        i += 1
-        # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_keys[scancode] == "zoom":
-            mapping = "f11"
-        else:
-            mapping = vivaldi_keys[scancode]
-        config += f"f{i} = {mapping}\n"
+    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=False)
     config += "\n"
-    
-    # make vivaldi keys act like vivaldi keys when super isn't held
-    for scancode in physmap:
-        # Map zoom to f11 since most applications wont listen to zoom
-        if vivaldi_keys[scancode] == "zoom":
-            mapping = "f11"
-        else:
-            mapping = vivaldi_keys[scancode]
-        config += f"{vivaldi_keys[scancode]} = {mapping}\n"
-
+    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=False)
     # map lock button to coffee
     config += "\nf13=coffee\nsleep=coffee\n"
-
-    # make fn keys act like fn keys when super is held
-    i = 0
     config += "\n[meta]\n"
-    for scancode in physmap:
-        i += 1
-        config += f"f{i} = f{i}\n"
-
-    # make vivaldi keys act like like fn keys when super is held
-    i = 0
+    config += get_functional_row(physmap, use_vivaldi=False, super_is_held=True)
     config += "\n"
-    for scancode in physmap:
-        i += 1
-        config += f"{vivaldi_keys[scancode]} = f{i}\n"
-
+    config += get_functional_row(physmap, use_vivaldi=True, super_is_held=True)
     # Add various extra shortcuts
     config += """\n[alt]
 backspace = delete
