@@ -29,6 +29,9 @@ vivaldi_keys = {
     "E7": "refresh",
 }
 
+def get_ids_string(device_ids):
+    return "\n".join(device_ids)
+
 def get_physmap_data():
     try:
         with open("/sys/bus/platform/devices/i8042/serio0/function_row_physmap", "r") as file:
@@ -60,7 +63,7 @@ def get_functional_row(physmap, use_vivaldi, super_is_held, super_inverted):
 def get_keyd_config(physmap, inverted):
     config = f"""\
 [ids]
-{"\n".join(device_ids)}
+{get_ids_string(device_ids)}
 
 [main]
 {get_functional_row(physmap, use_vivaldi=False, super_is_held=False, super_inverted=inverted)}
