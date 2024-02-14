@@ -30,34 +30,34 @@ if ! [ -f /usr/bin/keyd ]; then
 	echo "Installing keyd dependencies"
 	case $distro in
 		deb)
-			$privesc apt install -y build-essential git
+			$privesc apt install -y build-essential git &>> pkg.log
 			;;
 		arch)
-			$privesc pacman -S --noconfirm base-devel git
+			$privesc pacman -S --noconfirm base-devel git &>> pkg.log
 			;;
 		fedora)
-			$privesc dnf groupinstall -y "Development Tools" "Development Libraries"
+			$privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
 	esac
 
 	echo "Installing keyd"
 	case $distro in
 		suse)
-			$privesc zypper --non-interactive install keyd
+			$privesc zypper --non-interactive install keyd &>> pkg.log
 			;;
 		arch)
-			git clone https://aur.archlinux.org/keyd.git
+			git clone https://aur.archlinux.org/keyd.git &>> pkg.log
 			cd keyd
-			makepkg -si --noconfirm
+			makepkg -si --noconfirm &>> pkg.log
 			cd ..
 			;;
 		alpine)
-			$privesc apk add --no-interactive keyd
+			$privesc apk add --no-interactive keyd &>> pkg.log
 			;;
 		*)
-			git clone https://github.com/rvaiya/keyd
+			git clone https://github.com/rvaiya/keyd &>> pkg.log
 			cd keyd
-			make
+			make &>> pkg.log
 			$privesc make install
 			cd ..
 			;;
