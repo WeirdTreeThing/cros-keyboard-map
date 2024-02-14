@@ -7,6 +7,9 @@ set -e
 
 ROOT=$(pwd)
 
+# fancy color
+printf "\033[94m"
+
 if [ -f /usr/bin/apt ]; then
 	distro="deb"
 elif [ -f /usr/bin/zypper ]; then
@@ -104,3 +107,5 @@ else
 fi
 
 echo "Done"
+# reset color
+printf "\033[0m"
