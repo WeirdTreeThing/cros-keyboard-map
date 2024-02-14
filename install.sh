@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 #alpine arch and suse have packages
 #need to build on fedora and deb*
 
