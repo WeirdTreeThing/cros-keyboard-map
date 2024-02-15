@@ -7,6 +7,15 @@ device_ids = {
     "k:0001:0001", # AT keyboard
     "k:18d1:503c", # Google Inc. Hammer
     "k:18d1:5050", # Google Inc. Hammer
+    "k:18d1:504c", # Google Inc. Hammer
+    "k:18d1:5052", # Google Inc. Hammer
+    "k:18d1:5057", # Google Inc. Hammer
+    "k:18d1:505b", # Google Inc. Hammer
+    "k:18d1:5030", # Google Inc. Hammer
+    "k:18d1:503d", # Google Inc. Hammer
+    "k:18d1:5044", # Google Inc. Hammer
+    "k:18d1:5061", # Google Inc. Hammer
+    "k:18d1:502b", # Google Inc. Hammer
 }
 
 vivaldi_keys = {
