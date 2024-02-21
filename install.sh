@@ -73,7 +73,11 @@ if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null
 then
 	cp configs/cros-pixel.conf cros.conf
 else
-	python3 cros-keyboard-map.py
+	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
+	printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
+	printf "Would you like to invert this? (y/N) "
+	read -r INVERT
+	[[ $INVERT =~ ^[Yy]$ ]] && python3 cros-keyboard-map.py -i || python3 cros-keyboard-map.py
 fi
 
 echo "Installing config"
