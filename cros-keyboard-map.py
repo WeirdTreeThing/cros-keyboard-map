@@ -169,7 +169,7 @@ def main():
     physmap = get_physmap_data()
     if not physmap:
         print("no function row mapping found, using default mapping")
-        if is_x86:
+        if get_arch() == "x86_64":
             physmap = ['EA', 'E9', 'E7', '91', '92', '94', '95', 'A0', 'AE', 'B0']
         else:
             physmap = ['158', '159', '173', '372', '120', '224', '225', '113', '114', '115']
