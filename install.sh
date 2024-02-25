@@ -2,8 +2,8 @@
 
 set -e
 
-#alpine arch and suse have packages
-#need to build on fedora and deb*
+# alpine, arch, and suse have packages
+# need to build on fedora (without terra) and debian/ubuntu
 
 ROOT=$(pwd)
 
@@ -28,6 +28,9 @@ elif [ -f /usr/bin/doas ]; then
 	privesc="doas"
 fi
 
+# Fedora with the terra repo (Ultramarine) has keyd packaged
+[ $distro = "fedora" ] && dnf info keyd &>> pkg.log && FEDORA_HAS_KEYD=1
+
 if ! [ -f /usr/bin/keyd ]; then
     # if keyd isnt installed
 	echo "Installing keyd dependencies"
@@ -39,7 +42,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc pacman -S --noconfirm base-devel git &>> pkg.log
 			;;
 		fedora)
-			$privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
+			[ ! $FEDORA_HAS_KEYD -eq 1 ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
 	esac
 
@@ -58,11 +61,15 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc apk add --no-interactive keyd &>> pkg.log
 			;;
 		*)
-			git clone https://github.com/rvaiya/keyd &>> pkg.log
-			cd keyd
-			make &>> pkg.log
-			$privesc make install
-			cd ..
+			if [ $FEDORA_HAS_KEYD -eq 1 ]; then
+				$privesc dnf install -y keyd &>> pkg.log
+			else
+				git clone https://github.com/rvaiya/keyd &>> pkg.log
+				cd keyd
+				make &>> pkg.log
+				$privesc make install
+				cd ..
+			fi
 			;;
 	esac
 fi
