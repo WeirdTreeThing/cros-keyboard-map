@@ -38,9 +38,6 @@ if ! [ -f /usr/bin/keyd ]; then
 		deb)
 			$privesc apt install -y build-essential git &>> pkg.log
 			;;
-		arch)
-			$privesc pacman -S --noconfirm base-devel git &>> pkg.log
-			;;
 		fedora)
 			[ ! $FEDORA_HAS_KEYD -eq 1 ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
@@ -52,10 +49,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc zypper --non-interactive install keyd &>> pkg.log
 			;;
 		arch)
-			git clone https://aur.archlinux.org/keyd.git &>> pkg.log
-			cd keyd
-			makepkg -si --noconfirm &>> pkg.log
-			cd ..
+			$privesc pacman -S --noconfirm keyd &>> pkg.log
 			;;
 		alpine)
 			$privesc apk add --no-interactive keyd &>> pkg.log
