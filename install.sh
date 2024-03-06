@@ -29,7 +29,7 @@ elif [ -f /usr/bin/doas ]; then
 fi
 
 # Fedora with the terra repo (Ultramarine) has keyd packaged
-[ $distro = "fedora" ] && dnf info keyd &>> pkg.log && FEDORA_HAS_KEYD=1
+[ $distro = "fedora" ] && dnf info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
 if ! [ -f /usr/bin/keyd ]; then
     # if keyd isnt installed
