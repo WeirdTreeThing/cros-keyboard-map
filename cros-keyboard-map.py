@@ -52,7 +52,6 @@ vivaldi_keys = {
         "114": "volumedown",
         "115": "volumeup",
         "99" : "print",
-        "142": "coffee",
     }
 }
 
@@ -66,10 +65,7 @@ def get_dt_layout():
     keys = []
     keycodes = []
 
-    try:
-        fdt = libfdt.Fdt(open("/sys/firmware/fdt", "rb").read())
-    except:
-        return ""
+    fdt = libfdt.Fdt(open("/sys/firmware/fdt", "rb").read())
     currentnode = fdt.first_subnode(0)
 
     while True:
@@ -163,8 +159,7 @@ def main():
                         help="use functional keys by default and media keys when super is held")
     args = vars(parser.parse_args())
 
-    if get_arch() != "x86_64":
-        import libfdt
+    
 
     physmap = get_physmap_data()
     if not physmap:
@@ -179,4 +174,6 @@ def main():
         conf.write(config)
 
 if __name__ == "__main__":
+    if get_arch() != "x86_64":
+        import libfdt
     main()
