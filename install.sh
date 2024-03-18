@@ -39,7 +39,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc apt install -y build-essential git &>> pkg.log
 			;;
 		fedora)
-			[ ! "$FEDORA_HAS_KEYD" -eq 1 ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
+			[ ! "$FEDORA_HAS_KEYD" = "1" ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
 	esac
 
