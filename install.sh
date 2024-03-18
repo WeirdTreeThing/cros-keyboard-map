@@ -39,7 +39,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc apt install -y build-essential git &>> pkg.log
 			;;
 		fedora)
-			[ ! $FEDORA_HAS_KEYD -eq 1 ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
+			[ ! "$FEDORA_HAS_KEYD" -eq 1 ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
 	esac
 
@@ -55,7 +55,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc apk add --no-interactive keyd &>> pkg.log
 			;;
 		*)
-			if [ "$FEDORA_HAS_KEYD" -eq 1 ]; then
+			if [ "$FEDORA_HAS_KEYD" = "1" ]; then
 				$privesc dnf install -y keyd &>> pkg.log
 			else
 				git clone https://github.com/rvaiya/keyd &>> pkg.log
