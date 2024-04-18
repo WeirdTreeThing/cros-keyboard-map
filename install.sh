@@ -96,8 +96,7 @@ echo "Enabling keyd"
 case $distro in
     alpine)
 	# Chimera uses apk like alpine but uses dinit instead of openrc
-	if [ -f /usr/bin/dinitctdocker run -it nixpkgs/nix:nixos-23.11 cat /etx/os-release
-l ]; then
+	if [ -f /usr/bin/dinitctl ]; then
 		$privesc dinitctl start keyd
 		$privesc dinitctl enable keyd
 	else
