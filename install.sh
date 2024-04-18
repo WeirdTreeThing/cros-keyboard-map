@@ -20,7 +20,7 @@ elif [ -f /usr/bin/dnf ]; then
 	distro="fedora"
 elif [ -f /sbin/apk ]; then
 	distro="alpine"
-elif ! grep 'ID=nixos' /etc/os-release; then
+elif grep 'ID=nixos' /etc/os-release; then
 	echo "NixOS is not supported by this script."
 	echo "Bailing out..."
 	exit 1
