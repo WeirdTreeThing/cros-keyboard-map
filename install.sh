@@ -20,6 +20,10 @@ elif [ -f /usr/bin/dnf ]; then
 	distro="fedora"
 elif [ -f /sbin/apk ]; then
 	distro="alpine"
+elif ! grep 'ID=nixos' /etc/os-release; then
+	echo "NixOS is not supported by this script."
+	echo "Bailing out..."
+	exit 1
 fi
 
 if [ -f /usr/bin/sudo ]; then
@@ -92,7 +96,8 @@ echo "Enabling keyd"
 case $distro in
     alpine)
 	# Chimera uses apk like alpine but uses dinit instead of openrc
-	if [ -f /usr/bin/dinitctl ]; then
+	if [ -f /usr/bin/dinitctdocker run -it nixpkgs/nix:nixos-23.11 cat /etx/os-release
+l ]; then
 		$privesc dinitctl start keyd
 		$privesc dinitctl enable keyd
 	else
