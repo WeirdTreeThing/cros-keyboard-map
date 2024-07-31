@@ -32,6 +32,8 @@ elif [ -f /usr/bin/doas ]; then
 	privesc="doas"
 fi
 
+echo "Installing, this may take some time...."
+
 # Fedora with the terra repo (Ultramarine) has keyd packaged
 [ "$distro" = "fedora" ] && dnf info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
