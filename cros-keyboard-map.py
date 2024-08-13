@@ -24,7 +24,7 @@ vivaldi_keys = {
         "90": "previoussong",
         "91": "zoom",
         "92": "scale",
-        "93": "print",
+        "93": "sysrq",
         "94": "brightnessdown",
         "95": "brightnessup",
         "97": "kbdillumdown",
@@ -51,7 +51,7 @@ vivaldi_keys = {
         "113": "mute",
         "114": "volumedown",
         "115": "volumeup",
-        "99" : "print",
+        "99" : "sysrq",
     }
 }
 
@@ -144,8 +144,8 @@ f6 = kbdillumdown
 f7 = kbdillumup
 
 [control]
-f5 = print
-scale = print
+f5 = sysrq
+scale = sysrq
 
 [control+alt]
 backspace = C-A-delete
