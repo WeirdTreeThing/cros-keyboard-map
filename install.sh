@@ -16,7 +16,7 @@ elif [ -f /usr/bin/zypper ]; then
 	distro="suse"
 elif [ -f /usr/bin/pacman ]; then
 	distro="arch"
-elif [ -f /usr/bin/dnf ]; then
+elif [ -f /usr/bin/dnf4 ]; then
 	distro="fedora"
 elif [ -f /sbin/apk ]; then
 	distro="alpine"
@@ -35,7 +35,7 @@ fi
 echo "Installing, this may take some time...."
 
 # Fedora with the terra repo (Ultramarine) has keyd packaged
-[ "$distro" = "fedora" ] && dnf info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
+[ "$distro" = "fedora" ] && dnf4 info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
 if ! [ -f /usr/bin/keyd ]; then
     # if keyd isnt installed
@@ -45,7 +45,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			$privesc apt install -y build-essential git &>> pkg.log
 			;;
 		fedora)
-			[ ! "$FEDORA_HAS_KEYD" = "1" ] && $privesc dnf groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
+			[ ! "$FEDORA_HAS_KEYD" = "1" ] && $privesc dnf4 groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
 			;;
 	esac
 
@@ -62,7 +62,7 @@ if ! [ -f /usr/bin/keyd ]; then
 			;;
 		*)
 			if [ "$FEDORA_HAS_KEYD" = "1" ]; then
-				$privesc dnf install -y keyd &>> pkg.log
+				$privesc dnf4 install -y keyd &>> pkg.log
 			else
 				git clone https://github.com/rvaiya/keyd &>> pkg.log
 				cd keyd
