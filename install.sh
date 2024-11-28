@@ -80,7 +80,7 @@ if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null
 then
 	cp configs/cros-pixel.conf cros.conf
 	$privesc mkdir -p /etc/udev/hwdb.d/
-	$privesc cp configs/61-eve-keyboard.hwdb /etc/udev/hwdb.d/
+	$privesc cp configs/61-pixel-keyboard.hwdb /etc/udev/hwdb.d/
 	$privesc udevadm hwdb --update
 	$privesc udevadm trigger
 elif (grep -E "^(Sarien|Arcada)$" /sys/class/dmi/id/product_name &> /dev/null)
