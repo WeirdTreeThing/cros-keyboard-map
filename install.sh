@@ -35,7 +35,14 @@ fi
 echo "Installing, this may take some time...."
 
 # Fedora with the terra repo (Ultramarine) has keyd packaged
-[ "$distro" = "fedora" ] && dnf4 info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
+[ "$distro" = "fedora" ] && FEDORA_HAS_KEYD=1
+
+        if [ "$distro" = "fedora" ]; then
+            $privesc dnf install -y dnf-plugins-core &>> pkg.log
+            $privesc dnf copr enable -y alternateved/keyd &>> pkg.log
+            $privesc dnf install -y keyd &>> pkg.log
+        fi
+
 
 if ! [ -f /usr/bin/keyd ]; then
     # if keyd isnt installed
