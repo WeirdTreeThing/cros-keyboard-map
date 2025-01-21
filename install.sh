@@ -37,7 +37,7 @@ echo "Installing, this may take some time...."
 # Fedora with the terra repo (Ultramarine) has keyd packaged
 [ "$distro" = "fedora" ] && dnf4 info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
-if ! [ -f /usr/bin/keyd ]; then
+if [ -z "$(which keyd 2>/dev/null)" ]; then
     # if keyd isnt installed
 	echo "Installing keyd dependencies"
 	case $distro in
