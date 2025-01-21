@@ -1,5 +1,6 @@
 <h1 align="center">Utility to generate keyd configurations for use on Chromebooks</h1>
->[!WARNING]
+
+> [!WARNING]
 > This script is under construction and may be ready later.
 
 # Instructions
