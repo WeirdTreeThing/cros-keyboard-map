@@ -3,7 +3,7 @@
 ## List of supported distributions
 - Alpine
 - Arch Linux
-- ChimeraOS
+- Chimera Linux
 - Debian
 - Fedora
 - openSUSE
