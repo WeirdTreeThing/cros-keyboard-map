@@ -1,12 +1,12 @@
 <h1 align="center">Utility to generate keyd configurations for use on Chromebooks</h1>
 
 ## List of supported distributions
-- Ubuntu
+- Alpine
+- Arch Linux
 - Debian
 - Fedora
-- Arch Linux
-- Alpine
 - openSUSE
+- Ubuntu
 - Void Linux
 
 ### Instructions
