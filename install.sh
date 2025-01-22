@@ -25,6 +25,7 @@ elif [ -f /bin/xbps-install ]; then
 elif grep 'ID=nixos' /etc/os-release; then
 	echo "NixOS is not supported by this script."
 	echo "Bailing out..."
+ 	printf "\033[0m"
 	exit 1
 fi
 
