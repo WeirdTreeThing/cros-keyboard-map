@@ -1,6 +1,6 @@
 <h1 align="center">Utility to generate keyd configurations for use on Chromebooks</h1>
 
-## List of supported distrobutions
+## List of supported distributions
 - Ubuntu
 - Debian
 - Fedora
