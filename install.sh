@@ -110,9 +110,11 @@ case $distro in
 	if [ -f /usr/bin/dinitctl ]; then
 		$privesc dinitctl start keyd
 		$privesc dinitctl enable keyd
+  		libinput_conf_install
 	else
         	$privesc rc-update add keyd
         	$privesc rc-service keyd restart
+	 	libinput_conf_install
 	fi
 	;;
 	void)
@@ -120,25 +122,36 @@ case $distro in
 	    $privesc ln -s /etc/sv/keyd /var/service
 		$privesc sv enable keyd
 		$privesc sv start keyd
+  		libinput_conf_install
 	else
 	       echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
 		   echo "I'M OUTTA HERE!"
+     		   printf "\033[0m"
 		   exit 1
 	fi
 	;;
-    *)
-        $privesc systemctl enable keyd
-	$privesc systemctl restart keyd
+    	*)
+     	if [ -f /usr/bin/systemctl ]; then
+	    $privesc systemctl enable keyd
+	        $privesc systemctl restart keyd
+	 	libinput_conf_install
+	else
+ 		echo "This script is typically used for systemd init linux distributions. If youre using other than systemd, you have to enable the keyd service yourself according to your init system."
+   		echo "Just be your self, don't try to change completely."
+     		libinput_conf_install
 	;;
 esac
 
 echo "Installing libinput configuration"
-$privesc mkdir -p /etc/libinput
-if [ -f /etc/libinput/local-overrides.quirks ]; then
-    cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
-else
-    $privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
-fi
+libinput_conf_install() {
+	$privesc mkdir -p /etc/libinput
+	if [ -f /etc/libinput/local-overrides.quirks ]; then
+		cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
+	else
+    		$privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+	fi
+}
+
 
 echo "Done"
 # reset color
