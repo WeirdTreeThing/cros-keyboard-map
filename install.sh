@@ -2,7 +2,7 @@
 
 set -e
 
-# alpine, arch, and suse have packages
+# void, alpine, arch, and suse have packages
 # need to build on fedora (without terra) and debian/ubuntu
 
 ROOT=$(pwd)
@@ -20,6 +20,8 @@ elif [ -f /usr/bin/dnf4 ]; then
 	distro="fedora"
 elif [ -f /sbin/apk ]; then
 	distro="alpine"
+elif [ -f /bin/xbps-install ]; then
+    distro="void"
 elif grep 'ID=nixos' /etc/os-release; then
 	echo "NixOS is not supported by this script."
 	echo "Bailing out..."
@@ -59,6 +61,9 @@ if [ -z "$(which keyd 2>/dev/null)" ]; then
 			;;
 		alpine)
 			$privesc apk add --no-interactive keyd &>> pkg.log
+			;;
+		void)
+		    $privesc xbps-install -S keyd -y &>> pkg.log
 			;;
 		*)
 			if [ "$FEDORA_HAS_KEYD" = "1" ]; then
@@ -108,6 +113,17 @@ case $distro in
 	else
         	$privesc rc-update add keyd
         	$privesc rc-service keyd restart
+	fi
+	;;
+	void)
+	if [ -f /usr/bin/sv ]; then
+	    $privesc ln -s /etc/sv/keyd /var/service
+		$privesc sv enable keyd
+		$privesc sv start keyd
+	else
+	       echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
+		   echo "I'M OUTTA HERE!"
+		   exit 1
 	fi
 	;;
     *)
