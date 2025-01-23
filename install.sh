@@ -23,6 +23,7 @@ elif [ -f /sbin/apk ]; then
 elif [ -f /bin/xbps-install ]; then
     distro="void"
 elif grep 'ID=nixos' /etc/os-release; then
+	printf "\033[31m"
 	echo "NixOS is not supported by this script."
 	echo "Bailing out..."
  	printf "\033[0m"
@@ -120,15 +121,16 @@ case $distro in
 	;;
 	void)
 	if [ -f /usr/bin/sv ]; then
-	    $privesc ln -s /etc/sv/keyd /var/service
+		$privesc ln -s /etc/sv/keyd /var/service
 		$privesc sv enable keyd
 		$privesc sv start keyd
   		libinput_conf_install
 	else
-	       echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
-		   echo "I'M OUTTA HERE!"
-     		   printf "\033[0m"
-		   exit 1
+ 		printf "\033[31m"
+		echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
+		echo "I'M OUTTA HERE!"
+  		printf "\033[0m"
+		exit 1
 	fi
 	;;
     	*)
@@ -137,8 +139,10 @@ case $distro in
 	        $privesc systemctl restart keyd
 	 	libinput_conf_install
 	else
+ 		printf "\033[31m"
  		echo "This script is typically used for systemd init linux distributions. If youre using other than systemd, you have to enable the keyd service yourself according to your init system."
    		echo "Just be your self, don't try to change completely or idk, I don't care. [AS]"
+     		printf "\033[94m"
      		libinput_conf_install
 	;;
 esac
@@ -153,7 +157,7 @@ libinput_conf_install() {
 	fi
 }
 
-
+pintf "\033[32m"
 echo "Done"
 # reset color
 printf "\033[0m"
