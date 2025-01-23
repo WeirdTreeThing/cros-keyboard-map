@@ -138,7 +138,7 @@ case $distro in
 	 	libinput_conf_install
 	else
  		echo "This script is typically used for systemd init linux distributions. If youre using other than systemd, you have to enable the keyd service yourself according to your init system."
-   		echo "Just be your self, don't try to change completely."
+   		echo "Just be your self, don't try to change completely or idk, I don't care. [AS]"
      		libinput_conf_install
 	;;
 esac
