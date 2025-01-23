@@ -143,8 +143,8 @@ case $distro in
 	;;
 esac
 
-echo "Installing libinput configuration"
 libinput_conf_install() {
+	echo "Installing libinput configuration"
 	$privesc mkdir -p /etc/libinput
 	if [ -f /etc/libinput/local-overrides.quirks ]; then
 		cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
