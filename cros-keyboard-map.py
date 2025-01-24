@@ -147,6 +147,13 @@ f7 = kbdillumup
 f5 = sysrq
 scale = sysrq
 
+[altgr]
+backspace = delete
+left = home
+right = end
+up = pageup
+down = pagedown
+
 [control+alt]
 backspace = C-A-delete
 """
