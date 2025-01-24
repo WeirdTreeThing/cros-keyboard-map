@@ -21,17 +21,21 @@ elif [ -f /usr/bin/dnf4 ]; then
 elif [ -f /sbin/apk ]; then
 	distro="alpine"
 elif [ -f /bin/xbps-install ]; then
-    distro="void"
-elif grep 'ID=nixos' /etc/os-release; then
-	echo "NixOS is not supported by this script."
-	echo "Bailing out..."
-	exit 1
+	distro="void"
+elif grep 'ID=nixos' /etc/os-release &>> pkg.log; then
+	echo "WARNING: This script will not install keyd on NixOS, but can install the configuration for you."
+	printf "Continue? (y/N) "
+	read -r NIXINSTALL
+	[[ $NIXINSTALL =~ ^[Yy]$ ]] || exit 1
+	distro="nixos"
 fi
 
-if [ -f /usr/bin/sudo ]; then
+if which sudo &>/dev/null; then
 	privesc="sudo"
-elif [ -f /usr/bin/doas ]; then
+elif which doas &>/dev/null; then
 	privesc="doas"
+elif which run0 &>/dev/null; then
+	privesc="run0"
 fi
 
 echo "Installing, this may take some time...."
@@ -39,7 +43,7 @@ echo "Installing, this may take some time...."
 # Fedora with the terra repo (Ultramarine) has keyd packaged
 [ "$distro" = "fedora" ] && dnf4 info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
-if [ -z "$(which keyd 2>/dev/null)" ]; then
+if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
     # if keyd isnt installed
 	echo "Installing keyd dependencies"
 	case $distro in
@@ -96,7 +100,12 @@ else
 	printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
 	printf "Would you like to invert this? (y/N) "
 	read -r INVERT
-	[[ $INVERT =~ ^[Yy]$ ]] && python3 cros-keyboard-map.py -i || python3 cros-keyboard-map.py
+	if [ "$distro" == "nixos" ] && ! which python3 &>/dev/null; then
+		[[ $INVERT =~ ^[Yy]$ ]] && nix-shell -p python3 --run "python3 cros-keyboard-map.py -i" || 
+			nix-shell -p python3 --run "python3 cros-keyboard-map.py"
+	else
+		[[ $INVERT =~ ^[Yy]$ ]] && python3 cros-keyboard-map.py -i || python3 cros-keyboard-map.py
+	fi
 fi
 
 echo "Installing config"
