@@ -44,7 +44,7 @@ echo "Installing, this may take some time...."
 [ "$distro" = "fedora" ] && dnf4 info keyd -y&>> pkg.log && FEDORA_HAS_KEYD=1
 
 if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
-    # if keyd isnt installed
+  # if keyd isnt installed
 	echo "Installing keyd dependencies"
 	case $distro in
 		deb)
@@ -67,7 +67,7 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 			$privesc apk add --no-interactive keyd &>> pkg.log
 			;;
 		void)
-		    $privesc xbps-install -S keyd -y &>> pkg.log
+		  $privesc xbps-install -S keyd -y &>> pkg.log
 			;;
 		*)
 			if [ "$FEDORA_HAS_KEYD" = "1" ]; then
@@ -81,74 +81,74 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 			fi
 			;;
 	esac
-fi
-
-echo "Generating config"
-# Handle any special cases
-if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null)
-then
-	cp configs/cros-pixel.conf cros.conf
-	$privesc mkdir -p /etc/udev/hwdb.d/
-	$privesc cp configs/61-pixel-keyboard.hwdb /etc/udev/hwdb.d/
-	$privesc udevadm hwdb --update
-	$privesc udevadm trigger
-elif (grep -E "^(Sarien|Arcada)$" /sys/class/dmi/id/product_name &> /dev/null)
-then
-	cp configs/cros-sarien.conf cros.conf
-else
-	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
-	printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
-	printf "Would you like to invert this? (y/N) "
-	read -r INVERT
-	if [ "$distro" == "nixos" ] && ! which python3 &>/dev/null; then
-		[[ $INVERT =~ ^[Yy]$ ]] && nix-shell -p python3 --run "python3 cros-keyboard-map.py -i" || 
-			nix-shell -p python3 --run "python3 cros-keyboard-map.py"
-	else
-		[[ $INVERT =~ ^[Yy]$ ]] && python3 cros-keyboard-map.py -i || python3 cros-keyboard-map.py
 	fi
-fi
 
-echo "Installing config"
-$privesc mkdir -p /etc/keyd
-$privesc cp cros.conf /etc/keyd
+	echo "Generating config"
+	# Handle any special cases
+	if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null)
+	then
+		cp configs/cros-pixel.conf cros.conf
+		$privesc mkdir -p /etc/udev/hwdb.d/
+		$privesc cp configs/61-pixel-keyboard.hwdb /etc/udev/hwdb.d/
+		$privesc udevadm hwdb --update
+		$privesc udevadm trigger
+	elif (grep -E "^(Sarien|Arcada)$" /sys/class/dmi/id/product_name &> /dev/null)
+	then
+		cp configs/cros-sarien.conf cros.conf
+	else
+		printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
+		printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
+		printf "Would you like to invert this? (y/N) "
+		read -r INVERT
+		if [ "$distro" == "nixos" ] && ! which python3 &>/dev/null; then
+			[[ $INVERT =~ ^[Yy]$ ]] && nix-shell -p python3 --run "python3 cros-keyboard-map.py -i" || 
+				nix-shell -p python3 --run "python3 cros-keyboard-map.py"
+						else
+							[[ $INVERT =~ ^[Yy]$ ]] && python3 cros-keyboard-map.py -i || python3 cros-keyboard-map.py
+		fi
+	fi
 
-echo "Enabling keyd"
-case $distro in
+	echo "Installing config"
+	$privesc mkdir -p /etc/keyd
+	$privesc cp cros.conf /etc/keyd
+
+	echo "Enabling keyd"
+	case $distro in
     alpine)
-	# Chimera uses apk like alpine but uses dinit instead of openrc
-	if [ -f /usr/bin/dinitctl ]; then
-		$privesc dinitctl start keyd
-		$privesc dinitctl enable keyd
-	else
-        	$privesc rc-update add keyd
-        	$privesc rc-service keyd restart
-	fi
-	;;
-	void)
-	if [ -f /usr/bin/sv ]; then
-	    $privesc ln -s /etc/sv/keyd /var/service
-		$privesc sv enable keyd
-		$privesc sv start keyd
-	else
-	       echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
-		   echo "I'M OUTTA HERE!"
-		   exit 1
-	fi
-	;;
+			# Chimera uses apk like alpine but uses dinit instead of openrc
+			if [ -f /usr/bin/dinitctl ]; then
+				$privesc dinitctl start keyd
+				$privesc dinitctl enable keyd
+			else
+        $privesc rc-update add keyd
+        $privesc rc-service keyd restart
+			fi
+			;;
+		void)
+			if [ -f /usr/bin/sv ]; then
+	    	$privesc ln -s /etc/sv/keyd /var/service
+				$privesc sv enable keyd
+				$privesc sv start keyd
+			else
+	      echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
+		   	echo "I'M OUTTA HERE!"
+		   	exit 1
+			fi
+			;;
     *)
-        $privesc systemctl enable keyd
-	$privesc systemctl restart keyd
-	;;
-esac
+      $privesc systemctl enable keyd
+			$privesc systemctl restart keyd
+			;;
+	esac
 
-echo "Installing libinput configuration"
-$privesc mkdir -p /etc/libinput
-if [ -f /etc/libinput/local-overrides.quirks ]; then
+	echo "Installing libinput configuration"
+	$privesc mkdir -p /etc/libinput
+	if [ -f /etc/libinput/local-overrides.quirks ]; then
     cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
-else
+	else
     $privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
-fi
+	fi
 
-echo "Done"
-# reset color
-printf "\033[0m"
+	echo "Done"
+	# reset color
+	printf "\033[0m"
