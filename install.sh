@@ -62,7 +62,7 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 				$privesc apt install -y build-essential git &>> pkg.log
 				;;
 			fedora)
-				[ ! "$FEDORA_HAS_KEYD" = "1" ] && $privesc dnf4 groupinstall -y "Development Tools" "Development Libraries" &>> pkg.log
+				[ ! "$FEDORA_HAS_KEYD" = "1" ] && $privesc dnf4 install -y kernel-headers gcc make &>> pkg.log
 				;;
 		esac
 	fi
