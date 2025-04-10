@@ -127,29 +127,29 @@ $privesc cp cros.conf /etc/keyd
 
 echo "Enabling keyd"
 case $distro in
-  alpine)
+	alpine)
 		# Chimera uses apk like alpine but uses dinit instead of openrc
 		if [ -f /usr/bin/dinitctl ]; then
 			$privesc dinitctl start keyd
 			$privesc dinitctl enable keyd
 		else
-      $privesc rc-update add keyd
-      $privesc rc-service keyd restart
+			$privesc rc-update add keyd
+			$privesc rc-service keyd restart
 		fi
 		;;
 	void)
 		if [ -f /usr/bin/sv ]; then
-	    $privesc ln -s /etc/sv/keyd /var/service
+			$privesc ln -s /etc/sv/keyd /var/service
 			$privesc sv enable keyd
 			$privesc sv start keyd
 		else
-	    echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
-		  echo "I'M OUTTA HERE!"
-		  exit 1
+			echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
+			echo "I'M OUTTA HERE!"
+			exit 1
 		fi
 		;;
-  *)
-    $privesc systemctl enable keyd
+	*)
+		$privesc systemctl enable keyd
 		$privesc systemctl restart keyd
 		;;
 esac
@@ -157,9 +157,9 @@ esac
 echo "Installing libinput configuration"
 $privesc mkdir -p /etc/libinput
 if [ -f /etc/libinput/local-overrides.quirks ]; then
-  cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
+	cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
 else
-  $privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+	$privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
 fi
 
 echo "Done"
