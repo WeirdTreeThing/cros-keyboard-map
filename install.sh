@@ -132,6 +132,11 @@ case $distro in
 		if [ -f /usr/bin/dinitctl ]; then
 			$privesc dinitctl start keyd
 			$privesc dinitctl enable keyd
+		# Handle PostmarketOS with systemd
+		elif which systemctl &>/dev/null; then
+			$privesc cp -f $ROOT/keyd.service /etc/systemd/system/
+			$privesc systemctl enable keyd
+			$privesc systemctl restart keyd
 		else
 			$privesc rc-update add keyd
 			$privesc rc-service keyd restart
