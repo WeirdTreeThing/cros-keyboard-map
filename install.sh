@@ -100,14 +100,14 @@ echo "Generating config"
 # Handle any special cases
 if (grep -E "^(Nocturne|Atlas|Eve)$" /sys/class/dmi/id/product_name &> /dev/null)
 then
-	cp configs/cros-pixel.conf cros.conf
+	cp -f configs/cros-pixel.conf cros.conf
 	$privesc mkdir -p /etc/udev/hwdb.d/
-	$privesc cp configs/61-pixel-keyboard.hwdb /etc/udev/hwdb.d/
+	$privesc cp -f configs/61-pixel-keyboard.hwdb /etc/udev/hwdb.d/
 	$privesc udevadm hwdb --update
 	$privesc udevadm trigger
 elif (grep -E "^(Sarien|Arcada)$" /sys/class/dmi/id/product_name &> /dev/null)
 then
-	cp configs/cros-sarien.conf cros.conf
+	cp -f configs/cros-sarien.conf cros.conf
 else
 	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
 	printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
@@ -123,7 +123,7 @@ fi
 
 echo "Installing config"
 $privesc mkdir -p /etc/keyd
-$privesc cp cros.conf /etc/keyd
+$privesc cp -f cros.conf /etc/keyd
 
 echo "Enabling keyd"
 case $distro in
@@ -159,7 +159,7 @@ $privesc mkdir -p /etc/libinput
 if [ -f /etc/libinput/local-overrides.quirks ]; then
   cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
 else
-  $privesc cp $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+  $privesc cp -f $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
 fi
 
 echo "Done"
