@@ -36,6 +36,7 @@ vivaldi_keys = {
         "A0": "mute",
         "AE": "volumedown",
         "B0": "volumeup",
+        "DD": "sysrq",
         "E9": "forward",
         "EA": "back",
         "E7": "refresh",
