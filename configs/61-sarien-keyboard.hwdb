@@ -1,0 +1,5 @@
+evdev:atkbd:dmi:bvn*:bvr*:bd*:svnDell*:pnSarien:pvr*
+evdev:atkbd:dmi:bvn*:bvr*:bd*:svnDell*:pnArcada:pvr*
+ KEYBOARD_KEY_d4=rightmeta
+ KEYBOARD_KEY_d5=zoom
+ KEYBOARD_KEY_d6=scale
