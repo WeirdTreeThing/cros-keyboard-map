@@ -48,7 +48,7 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
   # if keyd isnt installed
 
   # Debian-based distros and Fedora don't have keyd in the repos, ask the user to compile it from source.
-  if [ "distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ]; then
+  if [ "$distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ]; then
   	echo "This script can compile keyd for you or you can choose to get it from another source."
   	printf "Compile keyd? (Y/n) "
   	read -r COMPKEYD
@@ -67,7 +67,7 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 		esac
 	fi
 
-	if ( [ "distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ] ) && [ "$build_keyd" = "1" ]; then
+	if ( [ "$distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ] ) && [ "$build_keyd" = "1" ]; then
 		echo "Compiling keyd"
 		git clone https://github.com/rvaiya/keyd &>> pkg.log
 		cd keyd
