@@ -18,6 +18,9 @@ device_ids = {
     "k:18d1:5061", # Google Inc. Hammer
     "k:18d1:502b", # Google Inc. Hammer
 }
+ignored_device_ids = {
+    "-0000:0000:404212c6", # Elan Touchscreen
+}
 
 vivaldi_keys = {
     "x86_64": {
@@ -152,6 +155,7 @@ def get_tty_switching(physmap):
 def get_keyd_config(physmap, inverted):
     config = f"""\
 [ids]
+{get_ids_string(ignored_device_ids)}
 {get_ids_string(device_ids)}
 
 [main]
